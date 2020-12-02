@@ -1,36 +1,31 @@
 import helpers
+import re
+
+pattern = re.compile(r'(\d+)-(\d+) (\w): (\w+)')
 
 
 def part_01(policy: str) -> bool:
     """
-    The password policy indicates the lowest and highest number of times a given letter
-    must appear for the password to be valid.
-    For example,
-        1-3 a means that the password must contain a at least 1 time and at most 3 times.
+    The policy indicates the lowest and highest number of times a given letter must appear for
+    the password to be valid. For example:
+    -- `1-3 a` means that the password must contain `a` at least 1 time and at most 3 times.
     """
-    a, b, c = policy.split()
-    low, high = [int(i) for i in a.split("-")]
-    b = b.strip(":")
-
-    return low <= c.count(b) <= high
+    low, high, letter, password = re.search(pattern, policy).groups()
+    return int(low) <= password.count(letter) <= int(high)
 
 
 def part_02(policy: str) -> bool:
     """
-    Each policy actually describes two positions in the password, where 1 means the
-    first character, 2 means the second character, and so on.  Only 1 index should
-    contain the correct letter at the position indicated.
-    :param policy:
-    :return: bool
+    Each policy describes two positions in the password, where 1 means the first character,
+    2 means the second character, and so on.  Only 1 index should contain the correct letter
+    at the position indicated.
     """
-    a, b, c = policy.split()
 
-    # Note: index is `1 based`
-    index1, index2 = [int(i)-1 for i in a.split("-")]
+    idx1, idx2, letter, password = re.search(pattern, policy).groups()
 
-    b = b.strip(":")
-    test1 = c[index1] == b
-    test2 = c[index2] == b
+    # index is `1 based` rather than zero indexed, so all numbers are one index off in the positive
+    test1 = password[int(idx1)-1] == letter
+    test2 = password[int(idx2)-1] == letter
 
     return (test1 or test2) and test1 is not test2
 
