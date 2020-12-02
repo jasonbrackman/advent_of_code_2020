@@ -1,5 +1,4 @@
 import helpers
-from collections import Counter
 
 
 def part_01(policy: str) -> bool:
@@ -12,8 +11,8 @@ def part_01(policy: str) -> bool:
     a, b, c = policy.split()
     low, high = [int(i) for i in a.split("-")]
     b = b.strip(":")
-    count = Counter(c)[b]
-    return low <= count <= high
+
+    return low <= c.count(b) <= high
 
 
 def part_02(policy: str) -> bool:
