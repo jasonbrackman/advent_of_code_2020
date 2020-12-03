@@ -1,26 +1,28 @@
-
 import math
+from typing import Tuple
+
 import helpers
 
 
-def day_03(rules):
+def day_03(rules: Tuple) -> int:
+    lines = helpers.get_lines(r'./data/day_03.txt')
+
     m = []
     for k, v in rules:
         # prime iterator each time
-        lines = iter(helpers.get_lines(r'./data/day_03.txt'))
-        _ = next(lines)  # always skip header
+        forest = iter(lines)
+        _ = next(forest)  # always skip header
 
         x = 0
         total = []
-        for line in lines:
+        for trees in forest:
             x += k
 
             # Skip lines if the rules expect it
-            for _ in range(v-1):
-                line = next(lines)
+            for _ in range(v - 1):
+                trees = next(forest)
 
-            r = line[x % len(line)]
-            total.append(r == '#')
+            total.append(trees[x % len(trees)] == '#')
 
         m.append((sum(total)))
 

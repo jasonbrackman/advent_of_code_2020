@@ -1,6 +1,4 @@
-import requests
 from typing import List
-
 
 
 def get_lines(path: str) -> List[str]:
