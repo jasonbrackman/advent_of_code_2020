@@ -1,8 +1,8 @@
 
 import re
 
-HCL_PATTERN = re.compile(r'[0-9A-Fa-f]{6}')
-PID_PATTERN = re.compile(r'[0-9]{9}')
+HCL_PATTERN = re.compile(r'^#[0-9A-Fa-f]{6}$')
+PID_PATTERN = re.compile(r'^\d{9}$')
 
 REQUIRED = [
     "byr",
@@ -16,73 +16,62 @@ REQUIRED = [
 
 
 def process01(passport):
-    c = True
     for req in REQUIRED:
-        if c is False:
-            continue
-
         if req not in passport.keys():
-            c = False
-    return c
+            return False
+    return True
 
 
 def process02(passport):
-    c = True
     for req in REQUIRED:
-        if c is False:
-            continue
 
         if req not in passport.keys():
-            c = False
+            return False
 
         elif req == "byr":
             if not 1920 <= int(passport[req]) <= 2002:
-                c = False
+                return False
 
         elif req == "iyr":
             if not 2010 <= int(passport[req]) <= 2020:
-                c = False
+                return False
 
         elif req == "eyr":
             if not 2020 <= int(passport[req]) <= 2030:
-                c = False
+                return False
 
         elif req == "hgt":
             if passport[req].endswith("cm"):
                 v = int(passport[req][:-2])
                 if not 150 <= v <= 193:
-                    c = False
+                    return False
 
             elif passport[req].endswith("in"):
                 v = int(passport[req][:-2])
                 if not 59 <= v <= 76:
-                    c = False
+                    return False
             else:
-                c = False
+                return False
 
         elif req == "hcl":
-            if passport[req].startswith("#") is False:
-                c = False
-
-            else:
-                v = passport[req][1:]
-                if len(v) != 6 or HCL_PATTERN.search(v) is False:
-                    c = False
+            v = passport[req]
+            if HCL_PATTERN.search(v) is None:
+                return False
 
         elif req == "ecl":
             if passport[req] not in ("amb", "blu", "brn", "gry", "grn", "hzl", "oth"):
-                c = False
+                return False
 
         elif req == "pid":
             v = passport[req]
-            if len(v) != 9 or PID_PATTERN.search(v) is False:
-                c = False
+            if PID_PATTERN.search(v) is None:
+                return False
 
-    return c
+    return True
 
 
 def parse(func):
-    total = list()
+    checked_passports = list()
 
     with open(r'./data/day_04.txt') as f:
         passports = f.read().split("\n\n")
@@ -96,10 +85,10 @@ def parse(func):
                 value = value.strip()
                 r[key] = value
 
-            c = func(r)
+            is_valid = func(r)
+            checked_passports.append(is_valid)
 
-            total.append(c)
-    return sum(total)
+    return sum(checked_passports)
 
 
 if __name__ == "__main__":
