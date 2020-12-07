@@ -9,9 +9,8 @@ def part01():
 def part02():
     count = 0
     for group in groups:
-        items = list(group)
-        lines = group.split()
-        count += len([item for item in set(items) if items.count(item) == len(lines)])
+        user_count = len(group.split())
+        count += len([item for item in set(group) if group.count(item) == user_count])
 
     return count
 
