@@ -15,7 +15,7 @@ def part2(ints):
         for ii in ints:
             for iii in ints:
                 if i + ii + iii == 2020:
-                    return i*ii*iii
+                    return i * ii * iii
 
 
 def main():

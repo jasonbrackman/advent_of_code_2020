@@ -1,6 +1,6 @@
 import helpers
 
-INPUT_PATH = r'./data/day_09.txt'
+INPUT_PATH = r"./data/day_09.txt"
 PREAMBLE = 25
 
 
@@ -29,8 +29,7 @@ def part01(nums):
 
 
 def part_02(needle):
-    low = 0
-    high = 1
+    low, high = 0, 1
     while True:
         r = nums[low:high]
         test = sum(r)
@@ -50,7 +49,3 @@ if __name__ == "__main__":
 
     assert p1 == 22406676
     assert p2 == 2942387
-
-
-
-

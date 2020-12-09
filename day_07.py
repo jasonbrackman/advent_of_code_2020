@@ -3,7 +3,7 @@ import helpers
 from typing import Dict
 
 
-BAG_INFO = re.compile(r'(\d+) (\w+ \w+)')
+BAG_INFO = re.compile(r"(\d+) (\w+ \w+)")
 
 
 class Bag:
@@ -21,7 +21,7 @@ class Bag:
 
 def get_bags() -> Dict[str, Bag]:
     bags = dict()
-    lines = helpers.get_lines(r'./data/day_07.txt')
+    lines = helpers.get_lines(r"./data/day_07.txt")
     for line in lines:
         name, *_ = line.split("bags")
 
@@ -66,6 +66,3 @@ if __name__ == "__main__":
     bags = get_bags()
     assert part01(bags) == 112
     assert part02(bags, "shiny gold") == 6260
-
-
-

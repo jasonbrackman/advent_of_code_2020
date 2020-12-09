@@ -36,9 +36,7 @@ from typing import List
 
 
 def parse(code: str):
-    num = ''.join(
-        [{"F": "0", "L": "0", "B": "1", "R": "1"}[c] for c in code]
-    )
+    num = "".join([{"F": "0", "L": "0", "B": "1", "R": "1"}[c] for c in code])
     row = int(num[:7], 2)
     col = int(num[-3:], 2)
 
@@ -52,7 +50,7 @@ def get_first_missing_seat_id(seat_ids: List) -> int:
 
 
 if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_05.txt')
+    lines = helpers.get_lines(r"./data/day_05.txt")
 
     seat_numbers = sorted(parse(line) for line in lines)
 

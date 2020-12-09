@@ -5,7 +5,7 @@ import helpers
 
 
 def day_03(rules: Tuple) -> int:
-    lines = helpers.get_lines(r'./data/day_03.txt')
+    lines = helpers.get_lines(r"./data/day_03.txt")
 
     m = []
     for k, v in rules:
@@ -22,7 +22,7 @@ def day_03(rules: Tuple) -> int:
             for _ in range(v - 1):
                 trees = next(forest)
 
-            total.append(trees[x % len(trees)] == '#')
+            total.append(trees[x % len(trees)] == "#")
 
         m.append((sum(total)))
 

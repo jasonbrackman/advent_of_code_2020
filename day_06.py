@@ -1,4 +1,3 @@
-
 def part01():
     count = 0
     for group in groups:
@@ -17,7 +16,7 @@ def part02():
 
 if __name__ == "__main__":
 
-    with open(r'./data/day_06.txt') as f:
+    with open(r"./data/day_06.txt") as f:
         groups = f.read().split("\n\n")
 
     assert part01() == 6506

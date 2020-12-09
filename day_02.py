@@ -1,7 +1,7 @@
 import helpers
 import re
 
-pattern = re.compile(r'(\d+)-(\d+) (\w): (\w+)')
+pattern = re.compile(r"(\d+)-(\d+) (\w): (\w+)")
 
 
 def part_01(policy: str) -> bool:
@@ -24,14 +24,14 @@ def part_02(policy: str) -> bool:
     idx1, idx2, letter, password = re.search(pattern, policy).groups()
 
     # index is `1 based` rather than zero indexed, so all numbers are one index off in the positive
-    test1 = password[int(idx1)-1] == letter
-    test2 = password[int(idx2)-1] == letter
+    test1 = password[int(idx1) - 1] == letter
+    test2 = password[int(idx2) - 1] == letter
 
     return (test1 or test2) and test1 is not test2
 
 
 if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_02.txt')
+    lines = helpers.get_lines(r"./data/day_02.txt")
 
     p1 = sum(part_01(line) for line in lines)
     assert p1 == 643

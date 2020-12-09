@@ -1,18 +1,9 @@
-
 import re
 
-HCL_PATTERN = re.compile(r'^#[0-9A-Fa-f]{6}$')
-PID_PATTERN = re.compile(r'^\d{9}$')
+HCL_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
+PID_PATTERN = re.compile(r"^\d{9}$")
 
-REQUIRED = [
-    "byr",
-    "iyr",
-    "eyr",
-    "hgt",
-    "hcl",
-    "ecl",
-    "pid"
-]
+REQUIRED = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
 
 
 def process01(passport):
@@ -73,7 +64,7 @@ def process02(passport):
 def parse(func):
     checked_passports = list()
 
-    with open(r'./data/day_04.txt') as f:
+    with open(r"./data/day_04.txt") as f:
         passports = f.read().split("\n\n")
 
         for passport in passports:
