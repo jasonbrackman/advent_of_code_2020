@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import re
 import helpers
 from typing import Dict
-
 
 BAG_INFO = re.compile(r"(\d+) (\w+ \w+)")
 
@@ -10,12 +11,17 @@ class Bag:
     def __init__(self, name, count=1):
         self.name: str = name.strip()
         self.count: int = count
-        self.contains = list()
+        self.__contains = []
+
+    def append(self, bag: Bag):
+        self.__contains.append(bag)
+
+    @property
+    def contains(self):
+        return self.__contains[:]
 
     def __str__(self):
-        r = ""
-        for c in self.contains:
-            r += f"{c.name} - {c.count}, "
+        r = ", ".join(f"{c.name} - {c.count}" for c in self.contains)
         return f"{self.name} - {self.count} => {r}"
 
 
@@ -28,7 +34,8 @@ def get_bags() -> Dict[str, Bag]:
         bag = Bag(name)
         for bag_info in BAG_INFO.findall(line):
             bag_count, bag_name = bag_info
-            bag.contains.append(Bag(bag_name, int(bag_count)))
+            bag.append(Bag(bag_name, int(bag_count)))
+
         bags[bag.name] = bag
 
     return bags
@@ -38,7 +45,7 @@ def part01(bags: Dict[str, Bag]) -> int:
     total = 0
     for name, bag in bags.items():
         visited = set("shiny gold")
-        frontier = list(bag.contains)
+        frontier = bag.contains
 
         while frontier:
             child = frontier.pop()
@@ -46,9 +53,9 @@ def part01(bags: Dict[str, Bag]) -> int:
                 if child.name == "shiny gold":
                     total += 1
                     break
-                else:
-                    visited.add(child.name)
-                    frontier.extend(list(bags[child.name].contains))
+                visited.add(child.name)
+                frontier.extend(bags[child.name].contains)
+
     return total
 
 

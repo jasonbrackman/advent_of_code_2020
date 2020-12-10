@@ -16,7 +16,7 @@ class Machine(object):
     def result(self):
         return self.__accumulator
 
-    def run(self, preparse=None, debug=False):
+    def run(self, in_loop=None, debug=False):
         """Program will exit with an index error when complete."""
 
         self.__accumulator = 0
@@ -24,10 +24,13 @@ class Machine(object):
         self.seen = {0: 1}
 
         while True:
-            if preparse:
-                preparse()
+            if in_loop:
+                in_loop()
 
-            arg, num = self.program[self.idx]
+            try:
+                arg, num = self.program[self.idx]
+            except IndexError:
+                return 0
 
             if arg == "acc":
                 self.__accumulator += num
@@ -63,87 +66,35 @@ class Machine(object):
             )
 
 
-# def part01(lines):
-#
-#     accumulator = 0
-#     seen = set()
-#     pointer = 0
-#
-#     while True:
-#         if pointer in seen:
-#             return accumulator
-#
-#         seen.add(pointer)
-#         arg, num = lines[pointer].split()
-#         num = int(num)
-#
-#         if arg == "acc":
-#             accumulator += num
-#             pointer += 1
-#         elif arg == "jmp":
-#             pointer += num
-#         elif arg == "nop":
-#             pointer += 1
-#
-#
-# def part02(lines):
-#     jumps = [i for i, l in enumerate(lines) if l.startswith( "jmp")]
-#
-#     for jump in jumps:
-#         accumulator = 0
-#         seen = set()
-#         pointer = 0
-#         while True:
-#             if pointer in seen:
-#                 break
-#
-#             seen.add(pointer)
-#
-#             try:
-#                 arg, num = ("nop", "0") if pointer == jump else lines[pointer].split()
-#                 num = int(num)
-#             except IndexError:
-#                 return accumulator
-#
-#             if arg == "acc":
-#                 accumulator += num
-#                 pointer += 1
-#             elif arg == "jmp":
-#                 pointer += num
-#             elif arg == "nop":
-#                 pointer += 1
-#
-
-
-def hack01():
+def in_loop_hack():
     if m.seen[m.idx] > 1:
-        raise HackException(m.result)
+        raise HackException(f"Current Result: {m.result}")
+
+
+def part01(m):
+    try:
+        m.run(in_loop=in_loop_hack, debug=True)
+    except HackException as e:
+        print(e.args[0])
+        return m.result
+
+
+def part02(m):
+    idxs = [i for i, l in enumerate(m.program) if l[0] == "jmp"]
+    for idx in idxs:
+        old = m.program[idx]
+        try:
+            m.program[idx] = ("nop", 0)
+            m.run(in_loop=in_loop_hack, debug=True)
+            return m.result
+        except HackException:
+            pass
+        m.program[idx] = old
 
 
 if __name__ == "__main__":
     lines = helpers.get_lines(r"./data/day_08.txt")
-
     m = Machine(r"./data/day_08.txt")
 
-    # Part01
-    try:
-        m.run(preparse=hack01, debug=True)
-    except HackException as e:
-        print(e.args[0])
-
-    # part 02
-    idxs = [i for i, l in enumerate(m.program) if l[0] == "jmp"]
-    for idx in idxs:
-        print(idx)
-        old = m.program[idx]
-        try:
-            m.program[idx] = ("nop", 0)
-            m.run(preparse=hack01, debug=True)
-        except IndexError:
-            print("Part2:", m.result)
-        except HackException as e:
-            pass
-        m.program[idx] = old
-
-    assert part01(lines) == 1584
-    assert part02(lines) == 920
+    assert part01(m) == 1584
+    assert part02(m) == 920
