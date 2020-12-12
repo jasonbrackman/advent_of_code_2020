@@ -2,7 +2,6 @@ import helpers
 from functools import lru_cache
 
 NUMS = helpers.get_ints(r"./data/day_10.txt")
-cache = dict()
 
 
 def part01(nums):

@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 
@@ -9,3 +10,8 @@ def get_lines(path: str) -> List[str]:
 def get_ints(path: str) -> List[int]:
     with open(path, "r") as text:
         return [int(i.strip()) for i in text.readlines()]
+
+
+def load_json(path: str) -> dict:
+    with open(path, "r") as f:
+        return json.load(f)
