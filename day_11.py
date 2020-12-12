@@ -1,5 +1,5 @@
 import helpers
-# import display
+import display
 
 INPUT_PATH = r"./data/day_11.txt"
 FLOOR = "."
@@ -101,11 +101,13 @@ def create_board(lines, part2=False):
     return new_lines, same
 
 
-def part01(part2=False):
+def part01(part2=False, generate_visualization=False):
     lines = helpers.get_lines(INPUT_PATH)
     index = 0
     while True:
-        # display.generic_out(lines, index)
+        if generate_visualization:
+            display.generic_out(lines, {".": "white", "L": "red", "#": "green"}, "day_11", index)
+
         index += 1
         new_lines, same = create_board(lines, part2=part2)
 
@@ -118,8 +120,15 @@ def part01(part2=False):
 
 
 if __name__ == "__main__":
+    generate_visualization = True
+
     p1 = part01()
     assert p1 == 2354
 
-    p2 = part01(part2=True)
+    p2 = part01(part2=True, generate_visualization=generate_visualization)
     assert p2 == 2072
+
+    if generate_visualization:
+        imgs = display.load_images_starting_with("day_11_")
+        imgs[0].save(r"./images/day_11.gif", save_all=True, append_images=imgs[1:], duration=5, loop=0)
+

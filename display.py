@@ -8,10 +8,16 @@ PPM
     255   0   0
 """
 
+import os
 import random
+import sys
+from typing import Dict
+from PIL import Image, ImageFont, ImageDraw
+
+BYTE_ORDER = sys.byteorder
 
 
-class Image:
+class PPM:
 
     multiplier = 1
 
@@ -20,16 +26,16 @@ class Image:
             "white": "255 255 255\n",
             "black": "0 0 0\n",
             "blackish": "20 20 20\n",
-            "green": "0 255 0\n",
+            "green": "105 189 111\n",  # "0 255 0\n",
             "blue": "0 0 255\n",
             "purple": "128 0 128\n",
             "random": f"{random.randint(0, 255)} {random.randint(0, 255)} {random.randint(0, 255)}\n",
-            "red": "255 0 0\n",
+            "red": "189 105 105\n",  # "255 0 0\n",
         }
 
         self.rows = rows * self.multiplier
         self.cols = cols * self.multiplier
-        print(f"Image Size: {self.rows}, {self.cols}")
+        # print(f"Image Size: {self.rows}, {self.cols}")
         # Default background is near black
         self.pixels = [[self.COLOURS["blackish"]] * self.cols for _ in range(self.rows)]
 
@@ -60,15 +66,13 @@ class Image:
 
         mode = "wt" if fmt == "P3" else "wb+"
         with open(file_path, mode) as handle:
-            handle.write(header.encode())
+            h = header if fmt == "P3" else header.encode()
+            handle.write(h)
             for lines in self.pixels:
                 if fmt == "P6":
                     for line in lines:
-                        r, g, b = line.split()
-                        r, g, b = int(r), int(g), int(b)
-                        handle.write(
-                            r.to_bytes(2, "big") + g.to_bytes(2, "big") + b.to_bytes(2, "big")
-                        )
+                        r, g, b = [int(i) for i in line.split()]
+                        handle.write(bytes([r, g, b]))
                 else:
                     handle.writelines(lines)
 
@@ -84,7 +88,7 @@ def example():
     rows = len(test_data)
     cols = len(test_data[0])
     for index in range(3):
-        canvas = Image(rows, cols)
+        canvas = PPM(rows, cols)
         for r in range(rows):
             for c in range(cols):
                 colour = "black"
@@ -93,25 +97,38 @@ def example():
                 elif test_data[r][c].isdigit():
                     colour = "random"
                 canvas.pixel(r, c, colour)
-        canvas.paint(f"./images/test_{index:02}.ppm")
+        canvas.paint(f"./images/test_{index:02}_p3.ppm", fmt="P3")
+        canvas.paint(f"./images/test_{index:02}_p6.ppm", fmt="P6")
 
 
-def generic_out(data, index):
+def load_images_starting_with(prefix):
+    # root = os.path.join(os.getcwd(), 'images')
+
+    imgs = []
+    index = 0
+    root = os.path.join(os.getcwd(), 'images')
+    for f in sorted(os.listdir(root)):
+        if f.startswith(prefix):
+            im = Image.open(os.path.join(root, f))
+            draw = ImageDraw.Draw(im)
+            draw.rectangle(((0, 00), (80, 15)), fill="black")
+            draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
+            imgs.append(im)
+            index += 1
+    return imgs
+
+
+def generic_out(data, rules: Dict[chr, str], prefix, index):
     rows = len(data)
     cols = len(data[0])
 
-    canvas = Image(rows, cols)
+    canvas = PPM(rows, cols)
     for r in range(rows):
         for c in range(cols):
-            colour = "black"
-            if data[r][c] == ".":
-                colour = "white"
-            elif data[r][c] == "L":
-                colour = "blue"
-            elif data[r][c] == "#":
-                colour = "red"
+            colour = rules.get(data[r][c], "black")
             canvas.pixel(r, c, colour)
-    canvas.paint(f"./images/test_{index:02}.ppm", fmt="P6")
+    canvas.paint(f"./images/{prefix}_{index:02}.ppm", fmt="P6")
+
 
 if __name__ == "__main__":
     example()
