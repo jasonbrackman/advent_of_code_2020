@@ -106,7 +106,9 @@ def part01(part2=False, generate_visualization=False):
     index = 0
     while True:
         if generate_visualization:
-            display.generic_out(lines, {".": "white", "L": "red", "#": "green"}, "day_11", index)
+            display.generic_out(
+                lines, {".": "white", "L": "red", "#": "green"}, "day_11", index
+            )
 
         index += 1
         new_lines, same = create_board(lines, part2=part2)
@@ -130,5 +132,10 @@ if __name__ == "__main__":
 
     if generate_visualization:
         imgs = display.load_images_starting_with("day_11_")
-        imgs[0].save(r"./images/day_11.gif", save_all=True, append_images=imgs[1:], duration=5, loop=0)
-
+        imgs[0].save(
+            r"./images/day_11.gif",
+            save_all=True,
+            append_images=imgs[1:],
+            duration=5,
+            loop=0,
+        )

@@ -1,10 +1,11 @@
+import display
 import helpers
 
 DIR = {
-    "N": (-1, 0),
-    "S": (1, 0),
-    "E": (0, 1),
-    "W": (0, -1),
+    "N": helpers.Pos(-1, 0),
+    "S": helpers.Pos(1, 0),
+    "E": helpers.Pos(0, 1),
+    "W": helpers.Pos(0, -1),
 }
 
 
@@ -14,17 +15,15 @@ def parse(lines):
 
 def part01(values):
 
-    current = (0, 0)
-    directions = ['N', 'E', 'S', 'W']
+    current = helpers.Pos(0, 0)
+    directions = ["N", "E", "S", "W"]
     facing = 1
 
     for direction, units in values:
         if direction in DIR:
-            p2x, p2y = DIR[direction]
-            current = (current[0] + p2x * units, current[1] + p2y * units)
+            current += DIR[direction] * units
         elif direction == "F":
-            p2x, p2y = DIR[directions[facing]]
-            current = (current[0] + p2x * units, current[1] + p2y * units)
+            current += DIR[directions[facing]] * units
         elif direction in ("L", "R"):
             m = -1 if direction == "L" else 1
             u = int(units) // 90 * m
@@ -32,21 +31,23 @@ def part01(values):
             # print("New Facing:", directions[facing])
         # print(current)
 
-    return abs(current[0]) + abs(current[1])
+    return current.manhattan_distance(helpers.Pos(0, 0))
 
 
 def part02(values):
-    current = (0, 0)
-    waypoint = [-1, 10]
-    directions = ['N', 'E', 'S', 'W']
+    for_display = {
+        "positions": [],
+        "waypoints": [],
+    }
+    current = helpers.Pos(0, 0)
+    waypoint = helpers.Pos(-1, 10)
+    directions = ["N", "E", "S", "W"]
 
     for direction, units in values:
         if direction in DIR:
-            p2x, p2y = DIR[direction]
-            waypoint = (waypoint[0] + p2x * units, waypoint[1] + p2y * units)
+            waypoint += DIR[direction] * units
         elif direction == "F":
-            p2x, p2y = waypoint
-            current = (current[0] + p2x * units, current[1] + p2y * units)
+            current += waypoint * units
         elif direction in ("L", "R"):
             old_a, old_b = waypoint
 
@@ -70,13 +71,41 @@ def part02(values):
                 elif p == "S":
                     a = abs(old)
 
-            waypoint = (a, b)
+            waypoint = helpers.Pos(a, b)
 
-    return abs(current[0]) + abs(current[1])
+        for_display["positions"].append(current)
+        for_display["waypoints"].append(waypoint)
+
+    return current.manhattan_distance(helpers.Pos(0, 0)), for_display
+
+
+def get_rows_col():
+    rows = cols = 0
+
+    for k, v in view.items():
+        all_ = [p.x for p in v]
+        r = max(all_) - min(all_)
+        if r > rows:
+            rows = r
+
+        bll_ = [p.y for p in v]
+        r = max(bll_) - min(bll_)
+        if r > cols:
+            cols = r
+
+    return rows, cols
 
 
 if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_12.txt')
+    lines = helpers.get_lines(r"./data/day_12.txt")
     values = parse(lines)
     assert part01(values) == 757
-    assert part02(values) == 51249
+    p2, view = part02(values)
+    assert p2 == 51249
+
+    rows, cols = get_rows_col()
+    print(rows, cols)
+    data = [['.'] * cols] * rows
+
+    # ppm = display.PPM(x, y)
+    display.generic_out(data, {'.': 'blue'}, 'day_12', 0)

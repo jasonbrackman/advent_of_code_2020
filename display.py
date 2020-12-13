@@ -44,7 +44,7 @@ class PPM:
             raise ValueError(
                 f"Expected one of the following colours: {self.COLOURS.keys()}"
             )
-        # print(row, col, colour)
+
         r = row * self.multiplier
         c = col * self.multiplier
         if r < self.rows and c < self.cols:
@@ -106,7 +106,7 @@ def load_images_starting_with(prefix):
 
     imgs = []
     index = 0
-    root = os.path.join(os.getcwd(), 'images')
+    root = os.path.join(os.getcwd(), "images")
     for f in sorted(os.listdir(root)):
         if f.startswith(prefix):
             im = Image.open(os.path.join(root, f))
