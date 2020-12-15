@@ -12,7 +12,8 @@ import os
 import random
 import sys
 from typing import Dict
-from PIL import Image, ImageFont, ImageDraw
+
+from PIL import Image, ImageDraw, ImageFont
 
 BYTE_ORDER = sys.byteorder
 

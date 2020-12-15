@@ -1,6 +1,7 @@
+import sys
+
 import display
 import helpers
-import sys
 
 DIR = {
     "N": helpers.Pos(-1, 0),

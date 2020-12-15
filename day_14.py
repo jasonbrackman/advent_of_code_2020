@@ -1,9 +1,9 @@
-
-import helpers
 import re
 from itertools import combinations
 
-p = re.compile(r'mem.(\d+). = (\d+)')
+import helpers
+
+p = re.compile(r"mem.(\d+). = (\d+)")
 
 
 def part01(lines):
@@ -23,7 +23,9 @@ def part01(lines):
             val = ["0"] * (36 - len(val)) + val
 
             r = []
-            for old, msk, new in zip(reversed(current_value), reversed(current_mask), reversed(val)):
+            for old, msk, new in zip(
+                reversed(current_value), reversed(current_mask), reversed(val)
+            ):
                 if msk == "X":
                     r.append(new)
                 elif msk == "1":
@@ -33,7 +35,7 @@ def part01(lines):
             r.reverse()
             collection[mem] = r
 
-    return sum(int(''.join(v), 2) for k, v in collection.items())
+    return sum(int("".join(v), 2) for k, v in collection.items())
 
 
 def part02(lines):
@@ -64,9 +66,9 @@ def part02(lines):
             r.reverse()
 
             for perm in get_permutations(r):
-                collection[int(''.join(perm), 2)] = val
+                collection[int("".join(perm), 2)] = val
 
-    return sum(int(''.join(v), 2) for k, v in collection.items())
+    return sum(int("".join(v), 2) for k, v in collection.items())
 
 
 def get_permutations(items):
@@ -95,8 +97,8 @@ def get_permutations(items):
 
 
 if __name__ == "__main__":
-    lines = iter(helpers.get_lines(r'./data/day_14.txt'))
+    lines = iter(helpers.get_lines(r"./data/day_14.txt"))
     assert part01(lines) == 12135523360904
 
-    lines = iter(helpers.get_lines(r'./data/day_14.txt'))
+    lines = iter(helpers.get_lines(r"./data/day_14.txt"))
     assert part02(lines) == 2741969047858

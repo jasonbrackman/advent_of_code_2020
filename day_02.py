@@ -1,5 +1,6 @@
-import helpers
 import re
+
+import helpers
 
 pattern = re.compile(r"(\d+)-(\d+) (\w): (\w+)")
 

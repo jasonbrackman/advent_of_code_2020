@@ -1,5 +1,6 @@
-import helpers
 from functools import lru_cache
+
+import helpers
 
 ints = helpers.get_ints(r"./data/day_10.txt")
 ints.append(max(ints) + 3)

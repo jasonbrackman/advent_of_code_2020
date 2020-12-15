@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import re
-import helpers
 from typing import Dict
+
+import helpers
 
 BAG_INFO = re.compile(r"(\d+) (\w+ \w+)")
 

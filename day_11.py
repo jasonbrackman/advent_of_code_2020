@@ -1,5 +1,5 @@
-import helpers
 import display
+import helpers
 
 INPUT_PATH = r"./data/day_11.txt"
 FLOOR = "."

@@ -1,5 +1,6 @@
-import helpers
 from typing import List
+
+import helpers
 
 INPUT_PATH = r"./data/day_09.txt"
 PREAMBLE = 25
