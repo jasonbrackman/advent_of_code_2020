@@ -76,13 +76,8 @@ def get_permutations(items):
 
     num = items.count("X")
     com = combinations(["0", "1"] * num, num)
-    visited = set()
-    for c in com:
-        if c in visited:
-            continue
-
-        visited.add(c)
-
+    for c in set(com):
+    
         count = 0
         new = []
         for item in items:

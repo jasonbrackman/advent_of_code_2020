@@ -110,7 +110,7 @@ if __name__ == "__main__":
     p2, view = part02(values)
     assert p2 == 51249
 
-    scale_down = 1000
+    scale_down = 100
     rows, cols, offset = get_rows_col()
     rows = rows//scale_down
     cols = cols//scale_down
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         r"./images/day_12.gif",
         save_all=True,
         append_images=imgs[1:],
-        optimize=True,
+        optimize=False,
         # duration=5,
         loop=0,
     )
