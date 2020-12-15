@@ -1,5 +1,6 @@
 import display
 import helpers
+import sys
 
 DIR = {
     "N": helpers.Pos(-1, 0),
@@ -81,19 +82,24 @@ def part02(values):
 
 def get_rows_col():
     rows = cols = 0
-
+    row_min = sys.maxsize
+    col_min = sys.maxsize
     for k, v in view.items():
-        all_ = [p.x for p in v]
-        r = max(all_) - min(all_)
+        xs = [p.x for p in v]
+        r = max(xs) - min(xs)
+        if min(xs) < row_min:
+            row_min = min(xs)
         if r > rows:
             rows = r
 
-        bll_ = [p.y for p in v]
-        r = max(bll_) - min(bll_)
+        ys = [p.y for p in v]
+        r = max(ys) - min(ys)
+        if min(ys) < col_min:
+            col_min = min(ys)
         if r > cols:
             cols = r
 
-    return rows, cols
+    return rows, cols, helpers.Pos(row_min, col_min)
 
 
 if __name__ == "__main__":
@@ -103,9 +109,33 @@ if __name__ == "__main__":
     p2, view = part02(values)
     assert p2 == 51249
 
-    rows, cols = get_rows_col()
-    print(rows, cols)
-    data = [['.'] * cols] * rows
+    scale_down = 1000
+    rows, cols, offset = get_rows_col()
+    rows = rows//scale_down
+    cols = cols//scale_down
 
-    # ppm = display.PPM(x, y)
-    display.generic_out(data, {'.': 'blue'}, 'day_12', 0)
+    print(rows, cols)
+    c = ['.'] * cols
+
+    for i, (p, w) in enumerate(zip(view["positions"], view["waypoints"])):
+        data = [c[:] for r in range(rows)]
+        p1 = p - offset
+        w1 = w - offset + p
+        try:
+            data[p1.x//scale_down][p1.y//scale_down] = "S"
+            data[w1.x//scale_down][w1.y//scale_down] = "W"
+            display.generic_out(data, {'.': 'blue', 'S': 'white', 'W': 'red'}, 'day_12', i)
+        except IndexError as e:
+            print(e)
+            print(p1)
+            print(w1)
+            print(i)
+    imgs = display.load_images_starting_with("day_12")
+    imgs[0].save(
+        r"./images/day_12.gif",
+        save_all=True,
+        append_images=imgs[1:],
+        optimize=True,
+        # duration=5,
+        loop=0,
+    )

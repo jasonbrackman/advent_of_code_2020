@@ -28,5 +28,8 @@ class Pos(NamedTuple):
     def __mul__(self, other: int):
         return Pos(self.x * other, self.y * other)
 
+    def __sub__(self, other):
+        return Pos(self.x - other.x, self.y - other.y)
+
     def manhattan_distance(self, other):
         return abs(self.x - other.x) + abs(self.y + other.y)

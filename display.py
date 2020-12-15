@@ -27,7 +27,7 @@ class PPM:
             "black": "0 0 0\n",
             "blackish": "20 20 20\n",
             "green": "105 189 111\n",  # "0 255 0\n",
-            "blue": "0 0 255\n",
+            "blue": "54 81 94\n",
             "purple": "128 0 128\n",
             "random": f"{random.randint(0, 255)} {random.randint(0, 255)} {random.randint(0, 255)}\n",
             "red": "189 105 105\n",  # "255 0 0\n",
@@ -108,13 +108,16 @@ def load_images_starting_with(prefix):
     index = 0
     root = os.path.join(os.getcwd(), "images")
     for f in sorted(os.listdir(root)):
-        if f.startswith(prefix):
-            im = Image.open(os.path.join(root, f))
-            draw = ImageDraw.Draw(im)
-            draw.rectangle(((0, 00), (80, 15)), fill="black")
-            draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
-            imgs.append(im)
-            index += 1
+        if f.startswith(prefix) and f.endswith(".ppm"):
+            try:
+                im = Image.open(os.path.join(root, f))
+                draw = ImageDraw.Draw(im)
+                draw.rectangle(((0, 0), (120, 15)), fill=(0, 0, 0))
+                draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
+                imgs.append(im)
+                index += 1
+            except:
+                print(f)
     return imgs
 
 
@@ -127,7 +130,7 @@ def generic_out(data, rules: Dict[chr, str], prefix, index):
         for c in range(cols):
             colour = rules.get(data[r][c], "black")
             canvas.pixel(r, c, colour)
-    canvas.paint(f"./images/{prefix}_{index:02}.ppm", fmt="P6")
+    canvas.paint(f"./images/{prefix}_{index:03}.ppm", fmt="P6")
 
 
 if __name__ == "__main__":
