@@ -103,6 +103,35 @@ def get_rows_col():
     return rows, cols, helpers.Pos(row_min, col_min)
 
 
+def visualize_day():
+    scale_down = 300
+    rows, cols, offset = get_rows_col()
+    rows = rows // scale_down
+    cols = cols // scale_down
+    print(rows, cols)
+    c = ['.'] * cols
+    for i, (p, w) in enumerate(zip(view["positions"], view["waypoints"])):
+        data = [c[:] for r in range(rows)]
+        p1 = p - offset
+        try:
+            data[p1.x // scale_down][p1.y // scale_down] = "S"
+            for stretch in range(30):
+                w1 = p1 + (w * (20 + stretch))
+                data[w1.x // scale_down][w1.y // scale_down] = "W"
+            display.generic_out(data, {'.': 'black', 'S': 'white', 'W': 'red'}, 'day_12', i)
+        except IndexError as e:
+            print(e, p1, w1, i)
+    imgs = display.load_images_starting_with("day_12")
+    imgs[60].save(
+        r"./images/day_12.gif",
+        save_all=True,
+        append_images=imgs[61:],
+        optimize=True,
+        duration=60,
+        loop=0,
+    )
+
+
 if __name__ == "__main__":
     lines = helpers.get_lines(r"./data/day_12.txt")
     values = parse(lines)
@@ -110,33 +139,4 @@ if __name__ == "__main__":
     p2, view = part02(values)
     assert p2 == 51249
 
-    scale_down = 100
-    rows, cols, offset = get_rows_col()
-    rows = rows//scale_down
-    cols = cols//scale_down
-
-    print(rows, cols)
-    c = ['.'] * cols
-
-    for i, (p, w) in enumerate(zip(view["positions"], view["waypoints"])):
-        data = [c[:] for r in range(rows)]
-        p1 = p - offset
-        w1 = w - offset + p
-        try:
-            data[p1.x//scale_down][p1.y//scale_down] = "S"
-            data[w1.x//scale_down][w1.y//scale_down] = "W"
-            display.generic_out(data, {'.': 'blue', 'S': 'white', 'W': 'red'}, 'day_12', i)
-        except IndexError as e:
-            print(e)
-            print(p1)
-            print(w1)
-            print(i)
-    imgs = display.load_images_starting_with("day_12")
-    imgs[0].save(
-        r"./images/day_12.gif",
-        save_all=True,
-        append_images=imgs[1:],
-        optimize=False,
-        # duration=5,
-        loop=0,
-    )
+    # visualize_day()
