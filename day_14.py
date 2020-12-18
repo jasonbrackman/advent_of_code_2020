@@ -77,7 +77,7 @@ def get_permutations(items):
     num = items.count("X")
     com = combinations(["0", "1"] * num, num)
     for c in set(com):
-    
+
         count = 0
         new = []
         for item in items:
@@ -91,9 +91,12 @@ def get_permutations(items):
     return perms
 
 
-if __name__ == "__main__":
+def run():
     lines = iter(helpers.get_lines(r"./data/day_14.txt"))
     assert part01(lines) == 12135523360904
-
     lines = iter(helpers.get_lines(r"./data/day_14.txt"))
     assert part02(lines) == 2741969047858
+
+
+if __name__ == "__main__":
+    run()

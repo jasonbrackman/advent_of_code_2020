@@ -51,13 +51,15 @@ def get_first_missing_seat_id(seat_ids: List) -> int:
             return i
 
 
-if __name__ == "__main__":
+def run():
+    global line, seat_numbers
     lines = helpers.get_lines(r"./data/day_05.txt")
-
     seat_numbers = sorted(parse(line) for line in lines)
-
     part1 = seat_numbers[-1]
     part2 = get_first_missing_seat_id(seat_numbers)
-
     assert part1 == 930, f"Expected 930; received {part1}"
     assert part2 == 515, f"Expected 515; received {part2}"
+
+
+if __name__ == "__main__":
+    run()

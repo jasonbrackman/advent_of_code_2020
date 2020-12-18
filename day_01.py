@@ -18,9 +18,8 @@ def part2(ints):
                     return i * ii * iii
 
 
-def main():
-    lines = helpers.get_lines(r"./data/day_01.txt")
-    ints = [int(line) for line in lines]
+def run():
+    ints = helpers.get_ints(r"./data/day_01.txt")
     p1 = part1(ints)
     p2 = part2(ints)
 
@@ -29,4 +28,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

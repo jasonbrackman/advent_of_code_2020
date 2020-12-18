@@ -82,6 +82,10 @@ def parse(func):
     return sum(checked_passports)
 
 
-if __name__ == "__main__":
+def run():
     assert parse(process01) == 228
     assert parse(process02) == 175
+
+
+if __name__ == "__main__":
+    run()

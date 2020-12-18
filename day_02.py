@@ -31,11 +31,14 @@ def part_02(policy: str) -> bool:
     return (test1 or test2) and test1 is not test2
 
 
-if __name__ == "__main__":
+def run():
+    global line
     lines = helpers.get_lines(r"./data/day_02.txt")
-
     p1 = sum(part_01(line) for line in lines)
     assert p1 == 643
-
     p2 = sum(part_02(line) for line in lines)
     assert p2 == 388
+
+
+if __name__ == "__main__":
+    run()

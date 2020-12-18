@@ -75,7 +75,7 @@ def part01(m):
     try:
         m.run(in_loop=in_loop_hack, debug=True)
     except HackException as e:
-        print(e.args[0])
+        # print(e.args[0])
         return m.result
 
 
@@ -92,9 +92,12 @@ def part02(m):
         m.program[idx] = old
 
 
-if __name__ == "__main__":
-    lines = helpers.get_lines(r"./data/day_08.txt")
+def run():
+    global m
     m = Machine(r"./data/day_08.txt")
-
     assert part01(m) == 1584
     assert part02(m) == 920
+
+
+if __name__ == "__main__":
+    run()

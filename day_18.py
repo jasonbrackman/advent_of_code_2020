@@ -35,16 +35,11 @@ def in_brackets(items):
 
 
 def do_math(lines, func_):
-    """
-
-    :param lines: puzzle input
-    :param func_: if part01 -- pass in the 'in_brackets' func else 'addition_takes_precedence'
-    :return:
-    """
+    """if part01, pass in the 'in_brackets' func else 'addition_takes_precedence'"""
     total = 0
     for line in lines:
         # minor data cleanup
-        items = [l for l in line if l != ' ']
+        items = [l for l in line if l != " "]
 
         index = 0
         math_stack = dict()
@@ -68,7 +63,11 @@ def do_math(lines, func_):
     return total
 
 
-if __name__ == "__main__":
+def run():
     lines = helpers.get_lines(r"./data/day_18.txt")
     assert do_math(lines, in_brackets) == 98621258158412
     assert do_math(lines, addition_takes_precedence) == 241216538527890
+
+
+if __name__ == "__main__":
+    run()

@@ -2,7 +2,7 @@ import sys
 
 import helpers
 
-PATH = r'./data/day_13.txt'
+PATH = r"./data/day_13.txt"
 
 
 def part01():
@@ -42,11 +42,11 @@ def part02():
             if r != 0:
                 results.append(r)
                 if len(results) >= current + 1:
-                    if current+1 in tumblers:
-                        tumblers[current+1].append(count)
+                    if current + 1 in tumblers:
+                        tumblers[current + 1].append(count)
                         current += 1
                     else:
-                        tumblers[current+1] = [count]
+                        tumblers[current + 1] = [count]
                 # print(len(results), count, stuff, current)
                 break
             results.append(r)
@@ -67,5 +67,10 @@ def parse():
     return timestamp, nums
 
 
-assert part01() == 205
-assert part02() == 803025030761664
+def run():
+    assert part01() == 205
+    assert part02() == 803025030761664
+
+
+if __name__ == "__main__":
+    run()

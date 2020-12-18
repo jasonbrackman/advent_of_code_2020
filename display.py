@@ -115,7 +115,9 @@ def load_images_starting_with(prefix, title=False):
                 if title:
                     draw = ImageDraw.Draw(im)
                     draw.rectangle(((0, 0), (120, 15)), fill=(0, 0, 0))
-                    draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
+                    draw.text(
+                        (0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf")
+                    )
                 imgs.append(im)
                 index += 1
             except:

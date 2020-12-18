@@ -116,17 +116,22 @@ def parse_lines(lines):
     return data
 
 
-if __name__ == "__main__":
+def run():
     ll = helpers.get_lines(r"./data/day_16.txt")
 
+    # new
     data = parse_lines(ll)
     ranges = [v for k, v in data.items() if "ticket" not in k]
     ranges_flat = set(itertools.chain.from_iterable(ranges))
     p1 = [r for row in data["nearby tickets"] for r in row if r not in ranges_flat]
     assert sum(p1) == 23115
 
+    # original
     it = part01(ll)
     assert sum(it) == 23115
-
     found = part02(ll, it)
     assert found == 239727793813
+
+
+if __name__ == "__main__":
+    run()

@@ -29,7 +29,7 @@ def day_03(rules: Tuple) -> int:
     return math.prod(m)
 
 
-if __name__ == "__main__":
+def run():
     part1 = ((3, 1),)
     part2 = (
         (1, 1),
@@ -38,6 +38,9 @@ if __name__ == "__main__":
         (7, 1),
         (1, 2),
     )
-
     assert day_03(part1) == 274
     assert day_03(part2) == 6050183040
+
+
+if __name__ == "__main__":
+    run()

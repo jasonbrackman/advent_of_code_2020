@@ -4,9 +4,9 @@ import helpers
 def do_work(nums, max_num):
     visited = dict()
     last_num = None
-    for i in range(1, max_num+1):
+    for i in range(1, max_num + 1):
         if len(nums) >= i:
-            r = nums[i-1]
+            r = nums[i - 1]
             if r not in visited:
                 visited[r] = [i]
             else:
@@ -29,11 +29,12 @@ def do_work(nums, max_num):
     return last_num
 
 
-if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_15.txt')
-    nums = []
-    for line in lines:
-        nums.extend(int(i) for i in line.split(','))
-
+def run():
+    lines = helpers.get_lines(r"./data/day_15.txt")
+    nums = [int(i) for line in lines for i in line.split(",")]
     assert do_work(nums, 2020) == 475
     assert do_work(nums, 30_000_000) == 11261
+
+
+if __name__ == "__main__":
+    run()

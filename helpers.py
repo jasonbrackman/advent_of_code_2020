@@ -1,5 +1,6 @@
 import json
-
+import multiprocessing
+import time
 from typing import Callable, List, NamedTuple
 
 
@@ -44,6 +45,7 @@ class Node:
         self.state = state
         self.parent = parent
 
+
 # def bfs(
 #     initial: T, goal_test: Callable[[T], bool], successors: Callable[[T], List[T]]
 # ) -> Optional[Node[T]]:
@@ -68,3 +70,16 @@ class Node:
 #             frontier.push(Node(child, current_node))
 #
 #     return None
+
+
+def time_it(command):
+    t1 = time.perf_counter()
+    command()
+    print(
+        f"[{str(command.__module__)}.{command.__name__}]: Completed in {(time.perf_counter() - t1)*1_000:0.1f} ms"
+    )
+
+
+def time_it_all(args: List):
+    with multiprocessing.Pool(4) as p:
+        p.map(time_it, args)

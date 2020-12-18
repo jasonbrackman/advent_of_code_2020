@@ -121,15 +121,12 @@ def part01(part2=False, generate_visualization=False):
         lines = new_lines
 
 
-if __name__ == "__main__":
-    generate_visualization = True
-
+def run():
+    generate_visualization = False
     p1 = part01()
     assert p1 == 2354
-
     p2 = part01(part2=True, generate_visualization=generate_visualization)
     assert p2 == 2072
-
     if generate_visualization:
         imgs = display.load_images_starting_with("day_11_")
         imgs[0].save(
@@ -139,3 +136,7 @@ if __name__ == "__main__":
             duration=5,
             loop=0,
         )
+
+
+if __name__ == "__main__":
+    run()

@@ -103,13 +103,13 @@ def get_rows_col():
     return rows, cols, helpers.Pos(row_min, col_min)
 
 
-def visualize_day():
+def visualize_day(view):
     scale_down = 300
     rows, cols, offset = get_rows_col()
     rows = rows // scale_down
     cols = cols // scale_down
     print(rows, cols)
-    c = ['.'] * cols
+    c = ["."] * cols
     for i, (p, w) in enumerate(zip(view["positions"], view["waypoints"])):
         data = [c[:] for r in range(rows)]
         p1 = p - offset
@@ -118,7 +118,9 @@ def visualize_day():
             for stretch in range(30):
                 w1 = p1 + (w * (20 + stretch))
                 data[w1.x // scale_down][w1.y // scale_down] = "W"
-            display.generic_out(data, {'.': 'black', 'S': 'white', 'W': 'red'}, 'day_12', i)
+            display.generic_out(
+                data, {".": "black", "S": "white", "W": "red"}, "day_12", i
+            )
         except IndexError as e:
             print(e, p1, w1, i)
     imgs = display.load_images_starting_with("day_12")
@@ -132,11 +134,14 @@ def visualize_day():
     )
 
 
-if __name__ == "__main__":
+def run():
     lines = helpers.get_lines(r"./data/day_12.txt")
     values = parse(lines)
     assert part01(values) == 757
     p2, view = part02(values)
     assert p2 == 51249
+    # visualize_day(view)
 
-    # visualize_day()
+
+if __name__ == "__main__":
+    run()

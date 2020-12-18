@@ -70,7 +70,11 @@ def part02(bags: Dict[str, Bag], start: str) -> int:
     return total
 
 
-if __name__ == "__main__":
+def run():
     bags = get_bags()
     assert part01(bags) == 112
     assert part02(bags, "shiny gold") == 6260
+
+
+if __name__ == "__main__":
+    run()

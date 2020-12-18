@@ -39,11 +39,14 @@ def part_02(needle):
                 high += 1
 
 
-if __name__ == "__main__":
+def run():
+    global ints
     ints = helpers.get_ints(INPUT_PATH)
-
     p1 = part01(ints)
     assert p1 == 22406676
-
     p2 = part_02(p1)
     assert p2 == 2942387
+
+
+if __name__ == "__main__":
+    run()

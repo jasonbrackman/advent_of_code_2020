@@ -9,7 +9,7 @@ INACTIVE = "."
 
 
 def get_new_id(board, z, r, c, p2=False):
-    current = '.'
+    current = "."
     try:
         current = board[z][r][c]
     except IndexError:
@@ -49,7 +49,10 @@ def get_neighbours2(board, zw, r, c):
                         try:
                             if r + r1 < 0 or c + c1 < 0:
                                 raise IndexError
-                            neighbours.append(board[(zw[0] + z1, zw[1] + w1)][r + r1][c + c1] == ACTIVE)
+                            neighbours.append(
+                                board[(zw[0] + z1, zw[1] + w1)][r + r1][c + c1]
+                                == ACTIVE
+                            )
                         except (KeyError, IndexError):
                             pass
 
@@ -57,7 +60,7 @@ def get_neighbours2(board, zw, r, c):
 
 
 def create_new_board(data, grow):
-    row_ = ['.'] * grow
+    row_ = ["."] * grow
     board = [row_[:] for _ in range(grow)]
     board.append(row_[:])
 
@@ -87,7 +90,7 @@ def pprint_board(z):
         total += list(itertools.chain.from_iterable(z[key])).count(ACTIVE)
         print(f"z={key}")
         for i in z[key]:
-            print(''.join(i))
+            print("".join(i))
         print("-" * 29)
     print(f"Total: {total}")
 
@@ -182,7 +185,9 @@ def part02(lines):
 def visualize(table):
     for i, key in enumerate(sorted(table.keys())):
         z, w = key
-        display.generic_out(table[key], {INACTIVE: 'black', ACTIVE: 'random'}, 'day_17', i)
+        display.generic_out(
+            table[key], {INACTIVE: "black", ACTIVE: "random"}, "day_17", i
+        )
     imgs = display.load_images_starting_with("day_17")
     imgs[0].save(
         r"./images/day_17.gif",
@@ -194,13 +199,14 @@ def visualize(table):
     )
 
 
-if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_17.txt')
+def run():
+    lines = helpers.get_lines(r"./data/day_17.txt")
     p1 = part01(lines)
     p2 = part02(lines)
     assert get_total(p1) == 232
     assert get_total(p2) == 1620
-
     # visualize(p2)
 
 
+if __name__ == "__main__":
+    run()

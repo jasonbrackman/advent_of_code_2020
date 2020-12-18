@@ -40,9 +40,12 @@ def part02(start):
     return count
 
 
-if __name__ == "__main__":
+def run():
     p1 = part01(NUMS)
     assert p1 == 2414
-
     p2 = part02(0)
     assert p2 == 21156911906816
+
+
+if __name__ == "__main__":
+    run()
