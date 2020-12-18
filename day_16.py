@@ -1,12 +1,21 @@
+import itertools
 import math
 import re
 
 import helpers
 
+from typing import Dict, List, Tuple
+
 p = re.compile(r"(\d+-\d+)")
 
+NEARBY_TICKETS = "nearby"
+YOUR_TICKETS = "your"
 
-def get_num_ranges(line):
+
+def get_num_ranges(line: str) -> List[int]:
+    """Take in a string contaning N patterns of a 'number1'-'number2' and return all numbers
+    in the range and inclusive of the max numbers."""
+
     nums = []
     for ranges in p.findall(line):
         ints = [int(i) for i in ranges.split("-")]
@@ -14,15 +23,16 @@ def get_num_ranges(line):
     return nums
 
 
-def part01(lines):
+def part01(lines: List[str]) -> List[int]:
+    """Get invalid tickets"""
     valid_nums = []
     tickets = []
     start = False
 
     for line in lines:
-        if not start and not line.startswith("nearby tickets:"):
+        if not start and not line.startswith(NEARBY_TICKETS):
             valid_nums += get_num_ranges(line)
-        elif line.startswith("nearby tickets:"):
+        elif line.startswith(NEARBY_TICKETS):
             start = True
         elif start:
             tickets.extend(
@@ -32,13 +42,16 @@ def part01(lines):
     return tickets
 
 
-def part02(lines, invalid_tickets):
+def part02(lines: List[str], invalid_tickets: List[int]) -> int:
     categories, tickets = get_categories_and_tickets(invalid_tickets, lines)
-    tickets_nearby = tickets["nearby"]
-    tickets_yours = tickets["your"]
+    tickets_nearby = tickets[NEARBY_TICKETS]
+    tickets_yours = tickets[YOUR_TICKETS]
 
     discovered = dict()
     while len(discovered) != len(categories):
+        """Require some sleuthing to find out which lines can only exist in one category then eliminate
+        the category from subsequent searches till all categories are associated with an index. The 
+        assumption here is that there IS a solution.  Otherwise the loop will continue forever."""
         for col_index in range(len(tickets_nearby[0])):  # enumerate(transposed):
 
             count = []
@@ -59,41 +72,61 @@ def part02(lines, invalid_tickets):
     )
 
 
-def get_categories_and_tickets(invalid_tickets, lines):
-    nearby_tickets = "nearby"
-    your_tickets = "your"
+def get_categories_and_tickets(
+    invalid_tickets: List[int], lines: List[str]
+) -> Tuple[Dict, Dict]:
 
     categories = dict()
     tickets = {
-        nearby_tickets: [],
-        your_tickets: [],
+        NEARBY_TICKETS: [],
+        YOUR_TICKETS: [],
     }
 
-    start = False
+    key = None
     for line in lines:
-        if not start and not line.startswith((nearby_tickets, your_tickets)):
+        if not key and not line.startswith((NEARBY_TICKETS, YOUR_TICKETS)):
             nums = get_num_ranges(line)
             if nums:
                 categories[line.split(":")[0]] = nums
-        elif line.startswith(your_tickets):
-            start = your_tickets
-        elif line.startswith(nearby_tickets):
-            start = nearby_tickets
-        elif start:
+        elif line.startswith(YOUR_TICKETS):
+            key = YOUR_TICKETS
+        elif line.startswith(NEARBY_TICKETS):
+            key = NEARBY_TICKETS
+        elif key:
             if len(line) == 0:
-                start = False
+                key = None
             else:
                 t = [int(i) for i in line.split(",") if int(i) not in invalid_tickets]
                 if len(t) == 20:
-                    tickets[start].append(list(t))
+                    tickets[key].append(list(t))
 
     return categories, tickets
 
 
-if __name__ == "__main__":
-    lines = helpers.get_lines(r"./data/day_16.txt")
-    invalid_tickets = part01(lines)
-    assert sum(invalid_tickets) == 23115
+def parse_lines(lines):
+    data = dict()
+    current_key = None
+    for line in lines:
+        if line:
+            if line[0].isalpha():
+                current_key, nums = line.split(":")
+                data[current_key] = get_num_ranges(line)
+            elif line[0].isdigit():
+                data[current_key].append([int(i) for i in line.split(",")])
+    return data
 
-    found = part02(lines, invalid_tickets)
+
+if __name__ == "__main__":
+    ll = helpers.get_lines(r"./data/day_16.txt")
+
+    data = parse_lines(ll)
+    ranges = [v for k, v in data.items() if "ticket" not in k]
+    ranges_flat = set(itertools.chain.from_iterable(ranges))
+    p1 = [r for row in data["nearby tickets"] for r in row if r not in ranges_flat]
+    assert sum(p1) == 23115
+
+    it = part01(ll)
+    assert sum(it) == 23115
+
+    found = part02(ll, it)
     assert found == 239727793813

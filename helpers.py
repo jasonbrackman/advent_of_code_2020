@@ -1,6 +1,6 @@
 import json
 
-from typing import List, NamedTuple
+from typing import Callable, List, NamedTuple
 
 
 def get_lines(path: str) -> List[str]:

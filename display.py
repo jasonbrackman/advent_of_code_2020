@@ -102,7 +102,7 @@ def example():
         canvas.paint(f"./images/test_{index:02}_p6.ppm", fmt="P6")
 
 
-def load_images_starting_with(prefix):
+def load_images_starting_with(prefix, title=False):
     # root = os.path.join(os.getcwd(), 'images')
 
     imgs = []
@@ -112,9 +112,10 @@ def load_images_starting_with(prefix):
         if f.startswith(prefix) and f.endswith(".ppm"):
             try:
                 im = Image.open(os.path.join(root, f))
-                draw = ImageDraw.Draw(im)
-                draw.rectangle(((0, 0), (120, 15)), fill=(0, 0, 0))
-                draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
+                if title:
+                    draw = ImageDraw.Draw(im)
+                    draw.rectangle(((0, 0), (120, 15)), fill=(0, 0, 0))
+                    draw.text((0, 0), f"{f:>10}", font=ImageFont.truetype("Verdana.ttf"))
                 imgs.append(im)
                 index += 1
             except:
