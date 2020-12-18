@@ -102,8 +102,8 @@ def part01(lines):
         # pprint_board(z)
         slices = []
 
-        z[min(z.keys()) - 1] = [["."] * grow] * grow
-        z[max(z.keys()) + 1] = [["."] * grow] * grow
+        z[min(z.keys()) - 1] = [[INACTIVE] * grow] * grow
+        z[max(z.keys()) + 1] = [[INACTIVE] * grow] * grow
 
         for d, v in z.items():
             new = []
@@ -147,17 +147,17 @@ def part02(lines):
                     key1a = (z_ + x, min_hyper + y)
                     key1b = (z_ + x, max_hyper + y)
                     if key1a not in zw:
-                        zw[key1a] = [["."] * grow] * grow
+                        zw[key1a] = [[INACTIVE] * grow] * grow
                     if key1b not in zw:
-                        zw[key1b] = [["."] * grow] * grow
+                        zw[key1b] = [[INACTIVE] * grow] * grow
 
                 for w_ in wdepth:
                     key2a = (min_depth + x, w_ + y)
                     key2b = (max_depth + x, w_ + y)
                     if key2a not in zw:
-                        zw[key2a] = [["."] * grow] * grow
+                        zw[key2a] = [[INACTIVE] * grow] * grow
                     if key2b not in zw:
-                        zw[key2b] = [["."] * grow] * grow
+                        zw[key2b] = [[INACTIVE] * grow] * grow
 
         for dw, v in zw.items():
             new = []
@@ -182,7 +182,7 @@ def part02(lines):
 def visualize(table):
     for i, key in enumerate(sorted(table.keys())):
         z, w = key
-        display.generic_out(table[key], {'.': 'black', '#': 'random'}, 'day_17', i)
+        display.generic_out(table[key], {INACTIVE: 'black', ACTIVE: 'random'}, 'day_17', i)
     imgs = display.load_images_starting_with("day_17")
     imgs[0].save(
         r"./images/day_17.gif",
