@@ -14,12 +14,12 @@ def addition_takes_precedence(items):
 
 
 def in_brackets(items):
-    arg2 = operator = None
-    current = 0
+    arg1 = arg2 = operator = None
+
     for i in items:
         if isinstance(i, int) or i.isdigit():
             if operator is None:
-                current = int(i)
+                arg1 = int(i)
             else:
                 arg2 = int(i)
         elif i == "+":
@@ -27,12 +27,11 @@ def in_brackets(items):
         elif i == "*":
             operator = math.prod
 
-        if current and arg2 and operator:
-            r = operator((current, arg2))
+        if arg1 and arg2 and operator:
+            arg1 = operator((arg1, arg2))
             arg2 = None
-            current = r
 
-    return current
+    return arg1
 
 
 def do_math(lines, func_):
