@@ -36,28 +36,36 @@ def in_brackets(items):
 
 
 def do_math(lines, func_):
+    """
+
+    :param lines: puzzle input
+    :param func_: if part01 -- pass in the 'in_brackets' func else 'addition_takes_precedence'
+    :return:
+    """
     total = 0
     for line in lines:
+        # minor data cleanup
         items = [l for l in line if l != ' ']
 
+        index = 0
         math_stack = dict()
-        count = 0
-        math_stack[count] = []
-        for index, n in enumerate(items):
+        math_stack[index] = []
+        for n in items:
             if n == "(":
-                count += 1
-                if count not in math_stack:
-                    math_stack[count] = []
+                index += 1
+                if index not in math_stack:
+                    math_stack[index] = []
             elif n == ")":
-                r = func_(math_stack[count])
-                math_stack[count].clear()
-                count -= 1
-                math_stack[count].append(r)
+                # store, clear, and then place the result
+                r = func_(math_stack[index])
+                math_stack[index].clear()
+                index -= 1
+                math_stack[index].append(r)
             else:
-                math_stack[count].append(n)
+                math_stack[index].append(n)
 
-        current = func_(math_stack[0])
-        total += current
+        total += func_(math_stack[index])
+
     return total
 
 
