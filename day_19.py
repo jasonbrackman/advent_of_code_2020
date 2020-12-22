@@ -38,7 +38,6 @@ def bfs(rules, message):
             if v_length == 1:
                 if message[0] == v[0]:
                     q.append((message[1:], keys))
-                    # print(message, v[0])
                     continue
             else:
                 # Backtrack and try with an alternative option if one is present.

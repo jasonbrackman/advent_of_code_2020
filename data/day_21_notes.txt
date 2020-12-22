@@ -1,0 +1,16 @@
+mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+trh fvjkl sbzzf mxmxvkd (contains dairy)
+sqjhc fvjkl (contains soy)
+sqjhc mxmxvkd sbzzf (contains fish)
+
+Dairy   | Fish    | Soy   | Dairy&Fish
+=======================================
+ trh    | sqjhc   | sqjhc |  mxmxvkd
+ fvjkl  | mxmxvkd | fvjkl |  kfcds
+ sbzzf  | sbzzf   |       |  sqjhc
+ mxmxvkd|         |       |  nhms
+---------------------------------------
+
+ mxmxvkd  sqjhc     fvjkl    mxmxvkd/sqjhc (already discovered)
+
+-> trh / sbzzf  *2 / sqjhc & nhms == 5

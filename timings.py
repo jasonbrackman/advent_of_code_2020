@@ -18,9 +18,9 @@ import day_15
 import day_16
 import day_17
 import day_18
-
-# import day_19
-# import day_20
+import day_19
+import day_20
+import day_21
 from helpers import time_it_all
 
 
@@ -44,8 +44,9 @@ def main():
         day_16.run,
         day_17.run,
         day_18.run,
-        # day_19.run,
-        # day_20.run,
+        day_19.run,
+        day_20.run,
+        day_21.run,
     ]
     time_it_all(codez)
 
