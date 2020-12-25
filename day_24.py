@@ -2,12 +2,12 @@ import helpers
 
 from collections import defaultdict
 
-"""
+r"""
    /\
   |  |
    \/
  (-1, -1)(-1, 1)
-(0, -1)    (0, 1)
+(0, -2)    (0, 2)
  (1, -1) (1, 1)
 """
 
@@ -60,7 +60,6 @@ def get_neighbours(hexpos):
     return [hexpos + v for k, v in helpers.DIRS.items()]
 
 
-
 if __name__ == "__main__":
     lines = helpers.get_lines(r'./data/day_24.txt')
     instructions = parse(lines)
@@ -79,7 +78,6 @@ if __name__ == "__main__":
     max_extents = [max(xs), max(ys), max(zs)]
     print(min_extents)
     print(max_extents)
-
 
     neighbour_states = dict()
     for key in results.keys():

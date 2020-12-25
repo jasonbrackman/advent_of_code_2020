@@ -38,6 +38,8 @@ DIRS = {
     "nw": HexPos(0, 1, -1),
     "ne": HexPos(1, 0, -1),
 }
+
+
 class Pos(NamedTuple):
     x: int
     y: int
