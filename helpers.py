@@ -19,6 +19,25 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
+
+class HexPos(NamedTuple):
+
+    x: int
+    y: int
+    z: int
+
+    def __add__(self, other):
+        return HexPos(self.x + other.x, self.y + other.y, self.z + other.z)
+
+
+DIRS = {
+    "e": HexPos(1, -1, 0),
+    "se": HexPos(0, -1, 1),
+    "sw": HexPos(-1, 0, 1),
+    "w": HexPos(-1, 1, 0),
+    "nw": HexPos(0, 1, -1),
+    "ne": HexPos(1, 0, -1),
+}
 class Pos(NamedTuple):
     x: int
     y: int

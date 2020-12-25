@@ -1,5 +1,8 @@
 import math
+import re
+from collections import defaultdict
 from typing import List
+
 import helpers
 
 
@@ -8,6 +11,7 @@ def rotate(array):
     n_array = array[:]
     array_length = len(array)
     squared = int(math.sqrt(array_length))
+
     for x in range(squared):
         r = []
         for i in range(array_length):
@@ -141,32 +145,30 @@ def part_02(array, corners, total):
             if ii in used_keys:
                 continue
             for new in get_neighbours(array, ii):
-                new_result = is_match(image, new, direction='r')
+                new_result = is_match(image, new, direction="r")
                 if new_result:
                     stack.append((ii, new))
                     used_keys.append(ii)
 
     for s in stack:
         key, image = s
-        # print(key)
         for ii in total[key]:
-            # print(ii)
             if ii in used_keys:
                 continue
             for new in get_neighbours(array, ii):
-                new_result = is_match(image, new, direction='d')
+                new_result = is_match(image, new, direction="d")
                 if new_result:
                     stack.append((ii, new))
                     used_keys.append(ii)
 
-
-    squared = math.sqrt(len(array))
-    print_stack(stack, squared)
+    squared = math.sqrt(len(stack))
+    # print_stack(stack, squared)
+    return get_image_stitched(stack, squared)
 
 
 def print_stack(stack, squared):
     for i, s in enumerate(stack, 1):
-        print(s[0], end=' ')
+        print(s[0], end=" ")
         if i % int(squared) == 0:
             print()
     print("=" * 50)
@@ -175,7 +177,7 @@ def print_stack(stack, squared):
     for j in range(len(stack)):
 
         for i, s in enumerate(stack, 1):
-            print(''.join(s[1][j]), end=' ')
+            print("".join(s[1][j]), end=" ")
             if i % int(squared) == 0:
                 print()
         if count % int(squared) == 0:
@@ -209,7 +211,7 @@ def get_starting_stack(array: dict, total: dict, corner: str):
     for i in total[corner]:
         image = array[i]
         for n in get_neighbours(array, corner):
-            result = is_match(n, image, direction='r')
+            result = is_match(n, image, direction="r")
             if result:
                 stack.append((corner, n))
                 stack.append((i, image))
@@ -221,14 +223,71 @@ def get_starting_stack(array: dict, total: dict, corner: str):
     return stack
 
 
+def get_monsters(r):
+    targets = defaultdict(int)
+    waters = sum(v.count("#") for v in r)
+    s = {"0": r}
+    n = get_neighbours(s, "0")
+    m1 = re.compile(r".{18,}#.")
+    m2 = re.compile(r"#.{4}##.{4}##.{4}###")
+    m3 = re.compile(r"#.{2}#.{2}#.{2}#.{2}#.{2}#")
+    for index, lines in enumerate(n):
+        while lines:
+            try:
+                t1 = lines.pop(0)
+                t2 = lines.pop(0)
+                t3 = lines.pop(0)
+            except IndexError:
+                continue
+            r1 = m1.findall("".join(t1))
+            r2 = m2.findall("".join(t2))
+            r3 = m3.findall("".join(t3))
+
+            if r1 and r2 and r3:
+                targets[index] += 1
+
+            lines.insert(0, t3)
+            lines.insert(0, t2)
+
+    monsters = max(v for k, v in targets.items())
+    return waters - (monsters * 15)
+
+
 def run():
     # part 01
-    lines = helpers.get_lines(r"./data/day_20_test.txt")
+    lines = helpers.get_lines(r"./data/day_20.txt")
     array = parse(lines)
     p1, corners, total = part_01(array)
-    # assert p1 == 23386616781851
+    assert p1 == 23386616781851
 
-    part_02(array, corners, total)
+    # part 02 (requires partial solution from p1)
+    r = part_02(array, corners, total)
+    p2 = get_monsters(r)
+    assert p2 == 2376
+
+
+def get_image_stitched(stack, squared):
+
+    # for i, s in enumerate(stack, 1):
+    #     print(s[0], end=' ')
+    #     if i % int(squared) == 0:
+    #         print()
+    # print("=" * 50)
+
+    squared = int(squared)
+    imgs = [img for _, img in stack]
+
+    transpose = []
+    while imgs:
+        todo = [imgs.pop(0) for _ in range(int(squared))]
+        # print(todo)
+        line = []
+
+        for index in range(1, len(todo[0]) - 1):
+            line += ["".join(t[index][1:-1]) for t in todo]
+            transpose.append("".join(line))
+            line = []
+    return transpose
 
 
 if __name__ == "__main__":
