@@ -68,7 +68,7 @@ class Machine(object):
 
 def in_loop_hack():
     if m.seen[m.idx] > 1:
-        raise HackException(f"Current Result: {m.result}")
+        raise HackException(f"Current Result: {m.k_neighbours}")
 
 
 def part01(m):
@@ -76,7 +76,7 @@ def part01(m):
         m.run(in_loop=in_loop_hack, debug=True)
     except HackException as e:
         # print(e.args[0])
-        return m.result
+        return m.k_neighbours
 
 
 def part02(m):
@@ -86,7 +86,7 @@ def part02(m):
         try:
             m.program[idx] = ("nop", 0)
             m.run(in_loop=in_loop_hack, debug=True)
-            return m.result
+            return m.k_neighbours
         except HackException:
             pass
         m.program[idx] = old

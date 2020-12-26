@@ -31,16 +31,6 @@ def parse(lines):
     return collection
 
 
-DIRS = {
-    "e":  helpers.Pos(0, 1),
-    "se": helpers.Pos(1, 1),
-    "sw": helpers.Pos(1, -1),
-    "w":  helpers.Pos(0, -1),
-    "nw": helpers.Pos(-1, -1),
-    "ne": helpers.Pos(-1, 1),
-}
-
-
 def get_visited_positions(instructions):
     positions = defaultdict(int)
 
@@ -48,10 +38,7 @@ def get_visited_positions(instructions):
         current_pos = helpers.HexPos(0, 0, 0)
         for move in instruction:
             current_pos += helpers.DIRS[move]
-        positions[current_pos] += 1
-
-    for k, v in positions.items():
-        print(k, v)
+        positions[current_pos] = positions[current_pos] + 1 if positions[current_pos] > 0 else 2
 
     return positions
 
@@ -60,28 +47,49 @@ def get_neighbours(hexpos):
     return [hexpos + v for k, v in helpers.DIRS.items()]
 
 
-if __name__ == "__main__":
-    lines = helpers.get_lines(r'./data/day_24.txt')
-    instructions = parse(lines)
-    results = get_visited_positions(instructions)
-    part01 = sum([v % 2 != 0 for k, v in results.items()])
-    assert part01 == 354
+def get_min_max_extents(hex_positions):
+    xs, ys, zs = set(), set(), set()
 
-    xs = set()
-    ys = set()
-    zs = set()
-    for key in results.keys():
+    for key in hex_positions.keys():
         xs.add(key.x)
         ys.add(key.y)
         zs.add(key.z)
-    min_extents = [min(xs), min(ys), min(zs)]
-    max_extents = [max(xs), max(ys), max(zs)]
-    print(min_extents)
-    print(max_extents)
 
-    neighbour_states = dict()
-    for key in results.keys():
-        neighbour_states[key] = get_neighbours(key)
+    return [min(xs), min(ys), min(zs)], [max(xs), max(ys), max(zs)]
 
-    # print(get_neighbours(list(results.keys())[0]))
-    # for idx in range(10):
+
+if __name__ == "__main__":
+
+    WHITE = 1
+    BLACK = 0
+
+    lines = helpers.get_lines(r'./data/day_24.txt')
+    instructions = parse(lines)
+    results = get_visited_positions(instructions)
+    part01 = sum([v % 2 == 0 for k, v in results.items()])
+    assert part01 == 354
+
+    # black = sum((v % 2 == 0 for k, v in results.items()))
+
+    for day in range(1, 101):
+        min_extents, max_extents = get_min_max_extents(results)
+
+        changes = list()
+        for i in range(min_extents[0]-2, max_extents[0]+2):
+            for j in range(min_extents[1]-2, max_extents[1]+2):
+                for k in range(min_extents[2]-2, max_extents[2]+2):
+
+                    t = helpers.HexPos(i, j, k)
+                    k_neighbours = sum([(results.get(n, 1) % 2 == BLACK) for n in get_neighbours(t)])
+
+                    colour = results[t] % 2 if t in results else WHITE
+                    if colour == BLACK and (k_neighbours == 0 or k_neighbours > 2):
+                        changes.append(t)
+                    elif colour == WHITE and k_neighbours == 2:
+                        changes.append(t)
+
+        for c in changes:
+            results[c] = results[c] + 1 if results[c] > 0 else 2
+
+    black = sum((v % 2 == BLACK for k, v in results.items()))
+    assert black == 3608

@@ -11,7 +11,7 @@ def get_lines(path: str) -> List[str]:
 
 def get_ints(path: str) -> List[int]:
     with open(path, "r") as text:
-        return [int(i.strip()) for i in text.readlines()]
+        return [int(i) for i in text.readlines()]
 
 
 def load_json(path: str) -> dict:

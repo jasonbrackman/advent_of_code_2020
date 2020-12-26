@@ -1,13 +1,13 @@
 import helpers
 
-
+SUBJECT = 7
 MAGIC = 20201227
 
 
-def get_loop_size(secret, public):
+def get_loop_size(public):
     value = 1
     for index in range(public):
-        value = (value * secret) % MAGIC
+        value = (value * SUBJECT) % MAGIC
         if value == public:
             return index + 1
 
@@ -20,20 +20,12 @@ def transform(number, loop):
 
 
 def run():
-    # prep input
-    lines = helpers.get_lines(r"./data/day_25.txt")
+    lines = helpers.get_ints(r"./data/day_25.txt")
     card, door = lines
-    card = int(card)
-    door = int(door)
 
-    # part1
-    rcard = None
-    rdoor = None
-    for i in range(20):
-        if rcard is None:
-            rcard = get_loop_size(i, card)
-        if rdoor is None:
-            rdoor = get_loop_size(i, door)
+    rcard = get_loop_size(card)
+    rdoor = get_loop_size(door)
+
     part01a = transform(card, rdoor)
     part01b = transform(door, rcard)
     assert part01a == part01b == 12181021
