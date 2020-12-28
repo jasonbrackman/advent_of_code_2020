@@ -59,7 +59,7 @@ def part_02(inert_ingredients):
     solve = []
     for key in keys:
         solve.append(inert_ingredients[key][0])
-    return ','.join(solve)
+    return ",".join(solve)
 
 
 def run():

@@ -7,6 +7,7 @@ PPM
     255
     255   0   0
 """
+import helpers
 
 import os
 import random
@@ -102,6 +103,17 @@ def example():
         canvas.paint(f"./images/test_{index:02}_p6.ppm", fmt="P6")
 
 
+def hex_example():
+    start = helpers.HexPos(0, 0, 0)
+    positions = [start]
+    positions += start.neighbours()
+
+    canvas = PPM(100, 100)
+    pixel = (4, 4)
+    for p in positions:
+        print(p.x, p.y, p.z)
+
+
 def load_images_starting_with(prefix, title=False):
     # root = os.path.join(os.getcwd(), 'images')
 
@@ -138,4 +150,5 @@ def generic_out(data, rules: Dict[chr, str], prefix, index):
 
 
 if __name__ == "__main__":
-    example()
+    # example()
+    hex_example()

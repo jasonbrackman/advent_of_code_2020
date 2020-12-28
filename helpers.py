@@ -19,15 +19,16 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
-
 class HexPos(NamedTuple):
-
     x: int
     y: int
     z: int
 
     def __add__(self, other):
         return HexPos(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def neighbours(self):
+        return [self + v for k, v in DIRS.items()]
 
 
 DIRS = {

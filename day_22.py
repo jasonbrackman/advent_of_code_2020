@@ -68,7 +68,7 @@ def part_02(players, game=0):
             p1.extend([c1, c2])
         else:
             p2.extend([c2, c1])
-    # print(f"Game {game} ended.")
+
     return p1, p2
 
 

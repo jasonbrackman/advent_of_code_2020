@@ -66,9 +66,12 @@ class Machine(object):
             )
 
 
+m = Machine(r"./data/day_08.txt")
+
+
 def in_loop_hack():
     if m.seen[m.idx] > 1:
-        raise HackException(f"Current Result: {m.k_neighbours}")
+        raise HackException(f"Current Result: {m.result}")
 
 
 def part01(m):
@@ -76,7 +79,7 @@ def part01(m):
         m.run(in_loop=in_loop_hack, debug=True)
     except HackException as e:
         # print(e.args[0])
-        return m.k_neighbours
+        return m.result
 
 
 def part02(m):
@@ -86,18 +89,17 @@ def part02(m):
         try:
             m.program[idx] = ("nop", 0)
             m.run(in_loop=in_loop_hack, debug=True)
-            return m.k_neighbours
+            return m.result
         except HackException:
             pass
         m.program[idx] = old
 
 
 def run():
-    global m
-    m = Machine(r"./data/day_08.txt")
     assert part01(m) == 1584
     assert part02(m) == 920
 
 
 if __name__ == "__main__":
+
     run()

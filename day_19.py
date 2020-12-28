@@ -5,7 +5,7 @@ from collections import deque
 def parse_values(values):
     r = dict()
     for idx, val in enumerate(values.split("|")):
-        r[idx] = list(val.strip(" \"").split())
+        r[idx] = list(val.strip(' "').split())
     return r
 
 
@@ -24,7 +24,7 @@ def parse_rules(lines):
 
 
 def bfs(rules, message):
-    q = deque([(message, ['0'])])
+    q = deque([(message, ["0"])])
     while q:
         message, keys = q.popleft()
         if not message and not keys:
