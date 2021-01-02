@@ -1,111 +1,74 @@
-from __future__ import annotations
 
 
-class LL:
-    def __init__(self, r=None):
-        self.cache = dict()
-        if r is not None:
-            self.add(r)
-        self.curr = r
+def cups_in_place(rounds, curr, ll):
+    max_input = len(ll) - 1
+    for _ in range(rounds):
+        curr = ll[curr]
+        p1 = ll[curr]
+        p2 = ll[p1]
+        p3 = ll[p2]
 
-    def add(self, data):
-        if self.curr is not None:
-            self.cache[self.curr] = data
-        self.cache[data] = None
-        assert self.curr != data
-        self.curr = data
-
-    def peek(self, data):
-        return self.cache[data]
-
-    def next(self):
-        r = self.cache[self.curr]
-        self.curr = r
-        return r
-
-    def fuse(self, data):
-        if self.cache[self.curr] is None:
-            self.cache[self.curr] = data
-        self.curr = data
-
-
-def part01(puzzle_input):
-    ll = LL()
-    for i in puzzle_input:
-        ll.add(int(i))
-    ll.fuse(int(puzzle_input[0]))
-
-    max_puzzle_input = max(puzzle_input)
-
-    for _ in range(100):
-        curr = ll.curr
-        p1 = ll.next()
-        p2 = ll.next()
-        p3 = ll.next()
-
-        num = curr - 1 if curr != 1 else max_puzzle_input
-        while num == p1 or num == p2 or num == p3:
+        num = curr - 1 if curr != 1 else 0
+        while num in (p1, p2, p3):
             num -= 1
 
         if num < 1:
-            num = max_puzzle_input
-            while num == p1 or num == p2 or num == p3:
+            num = max_input
+            while num in (p1, p2, p3):
                 num -= 1
 
-        ll.cache[curr] = ll.next()
-        ll.cache[p3] = ll.peek(num)
-        ll.cache[num] = p1
+        ll[curr] = ll[p3]
+        ll[p3] = ll[num]
+        ll[num] = p1
+
+    return ll
+
+
+def part01(puzzle_input):
+
+    ll = [i for i in range(0, len(puzzle_input)+1)]
+    pi1 = [int(i) for i in puzzle_input]
+    pi2 = pi1[:]
+    pi2.append(pi2.pop(0))
+
+    for idx, nxt in zip(pi1, pi2):
+        ll[idx] = nxt
+
+    curr = pi1[-1]
+    cups_in_place(100, curr, ll)
 
     ans = ""
-    r = ll.peek(1)
+    r = ll[1]
     while r != 1:
-        ans += f"{r}"
-        # print(r, end='')
-        r = ll.peek(r)
+        ans += str(r)
+        r = ll[r]
     return int(ans)
 
 
 def part02(puzzle_input):
-    ll = LL()
-    for i in puzzle_input:
-        ll.add(int(i))
-    ll.fuse(int(puzzle_input[0]))
 
-    max_puzzle_input = max(puzzle_input)
+    ll = [i for i in range(0, 1_000_001)]
+    pi1 = [int(i) for i in puzzle_input] + [x for x in range(9 + 1, 1_000_001)]
+    pi2 = pi1[:]
+    pi2.append(pi2.pop(0))
+    for idx, nxt in zip(pi1, pi2):
+        ll[idx] = nxt
 
-    for _ in range(10_000_000):
-        curr = ll.curr
-        p1 = ll.next()
-        p2 = ll.next()
-        p3 = ll.next()
+    curr = pi1[-1]
+    ll = cups_in_place(10_000_000, curr, ll)
 
-        num = curr - 1 if curr != 1 else max_puzzle_input
-        while num == p1 or num == p2 or num == p3:
-            num -= 1
-
-        if num < 1:
-            num = max_puzzle_input
-            while num == p1 or num == p2 or num == p3:
-                num -= 1
-
-        ll.cache[curr] = ll.next()
-        ll.cache[p3] = ll.peek(num)
-        ll.cache[num] = p1
-
-    a = ll.peek(1)
-    b = ll.peek(a)
+    a = ll[1]
+    b = ll[a]
     return a * b
 
 
 def run():
-    puzzle_input_test = "389125467"
     puzzle_input = "739862541"
-    puzzle_input = puzzle_input
-    pi1 = [int(i) for i in puzzle_input]
-    pi2 = [int(i) for i in puzzle_input] + [x for x in range(9 + 1, 1_000_001)]
-    assert part01(pi1) == 94238657
-    assert part02(pi2) == 3072905352
+    assert part01(puzzle_input) == 94238657
+    assert part02(puzzle_input) == 3072905352
 
 
 if __name__ == "__main__":
     run()
+    # import cProfile
+    # cProfile.run("run()")

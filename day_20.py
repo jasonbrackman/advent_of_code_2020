@@ -217,9 +217,9 @@ def get_starting_stack(array: dict, total: dict, corner: str):
                 stack.append((i, image))
                 break
 
-    if len(stack) != 2:
-        print("Stack:", stack)
-        raise
+    # if len(stack) != 2:
+    #     # print("Stack:", stack)
+    #     raise
     return stack
 
 
@@ -257,6 +257,7 @@ def run():
     # part 01
     lines = helpers.get_lines(r"./data/day_20.txt")
     array = parse(lines)
+
     p1, corners, total = part_01(array)
     assert p1 == 23386616781851
 

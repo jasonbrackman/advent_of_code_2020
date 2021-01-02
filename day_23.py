@@ -22,7 +22,7 @@ def circle(input_, times_to_run):
         while test_index is None:
             if test >= min(c):
                 if test in c:
-                    test_index = c.index(test)
+                    test_index = c.index(test)  # very expensive
                 else:
                     test -= 1
             else:
@@ -33,7 +33,7 @@ def circle(input_, times_to_run):
                 else:
                     test_index = prefix.index(max_prefix)
 
-        c = c[0 : test_index + 1] + collect + c[test_index + 1 :]
+        c = c[0: test_index + 1] + collect + c[test_index + 1:]
         count += 1
 
     return c
