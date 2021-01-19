@@ -7,19 +7,14 @@ import helpers
 
 def rotate(array):
     final = [array[:]]
-    n_array = array[:]
-    array_length = len(array)
-    squared = int(math.sqrt(array_length))
-    assert array_length == len(array[0]), f"Expected same length for rows/cols, but got rows:{array_length} cols:{len(array[0])}"
-    for _ in range(squared):
-        r = []
-        for i in range(array_length):
-            item = [n_array[j][i] for j in range(array_length)]
-            r.append(item)
-        r = [list(reversed(line)) for line in r]
 
-        final.append(r[:])
-        n_array = r[:]
+    array_length = len(array)
+    for rotate_90 in range(3):
+        r = [
+            [final[-1][j][i] for j in range(array_length)] for i in range(array_length)
+        ]
+        r = [list(reversed(line)) for line in r]
+        final.append(r)
 
     return final
 
@@ -233,18 +228,22 @@ def display_image(image, index):
     )
 
 
+m1 = re.compile(r".{18}#.")
+m2 = re.compile(r"#.{4}##.{4}##.{4}###")
+m3 = re.compile(r".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
+
+
 def get_monsters(r):
-    display_image(r, -1)
+    # display_image(r, -1)
+    displays = dict()
+
     targets = dict()
     waters = sum(v.count("#") for v in r)
     s = {"0": r}
     n = get_variations(s, "0")
 
-    m1 = re.compile(r".{18}#.")
-    m2 = re.compile(r"#.{4}##.{4}##.{4}###")
-    m3 = re.compile(r".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
-
     for index, lines in enumerate(n):
+        displays[index] = []
         lines = list(lines)
         targets[index] = 0
         while lines:
@@ -254,32 +253,61 @@ def get_monsters(r):
                 t3 = lines.pop(0)
             except IndexError:
                 continue
+
             r1 = m1.findall("".join(t1))
             r2 = m2.findall("".join(t2))
             r3 = m3.findall("".join(t3))
 
             if r1 and r2 and r3:
-
-                #print(index, len(r1), len(r2), len(r3))
-                assert len(r1) == 1 or len(r2) == 1 or len(r3) == 1, "Could be > 1 of the same monster on three lines."
+                assert (
+                    len(r1) == 1 or len(r2) == 1 or len(r3) == 1
+                ), "Could be > 1 of the same monster on three lines."
                 targets[index] += 1
 
-                # s1 = re.sub(m1, "                  M ", ''.join(t1))
-                # s2 = re.sub(m2, "M    MM    MM    MMM", ''.join(t2))
-                # s3 = re.sub(m3, " M  M  M  M  M  M   ", ''.join(t3))
-
-                # print(''.join(t1))
-                # print(s2)
-                # print(s3)
             lines.insert(0, t3)
             lines.insert(0, t2)
 
     monsters = max(v for k, v in targets.items())
-    # for k, v in targets.items():
-    #     if v == monsters:
-    #         for l in n[k]:
-    #             print(l)
+    for k, v in targets.items():
+        if v == monsters:
+            paint(n[k])
     return waters - (monsters * 15)
+
+
+def paint(lines):
+    stuff = []
+    while lines:
+        try:
+            t1 = lines.pop(0)
+            t2 = lines.pop(0)
+            t3 = lines.pop(0)
+        except IndexError:
+            continue
+        t1_s = "".join(t1)
+        t2_s = "".join(t2)
+        t3_s = "".join(t3)
+
+        r1 = m1.findall(t1_s)
+        r2 = m2.findall(t2_s)
+        r3 = m3.findall(t3_s)
+
+        if r1 and r2 and r3:
+            start = m3.search("".join(t3)).start() - 1
+            while True:
+                start += 1
+                s1 = re.subn(m1, "                  M ", t1_s[start : start + 20])
+                s2 = re.subn(m2, "M    MM    MM    MMM", t2_s[start : start + 20])
+                s3 = re.subn(m3, " M  M  M  M  M  M   ", t3_s[start : start + 20])
+                if s1[1] >= 1 and s2[1] >= 1:
+                    break
+            stuff.append(t1_s[:start] + s1[0] + t1_s[start + 20 :])
+            stuff.append(t2_s[:start] + s2[0] + t2_s[start + 20 :])
+            stuff.append(t3_s[:start] + s3[0] + t3_s[start + 20 :])
+        else:
+            stuff.append(t1_s)
+        lines.insert(0, t3)
+        lines.insert(0, t2)
+    display_image(stuff, 99)
 
 
 def run():
@@ -298,12 +326,6 @@ def run():
 
 def get_image_stitched(stack, squared):
 
-    # for i, s in enumerate(stack, 1):
-    #     print(s[0], end=' ')
-    #     if i % int(squared) == 0:
-    #         print()
-    # print("=" * 50)
-
     squared = int(squared)
     imgs = [img for _, img in stack]
 
@@ -317,7 +339,9 @@ def get_image_stitched(stack, squared):
             transpose.append("".join(line))
             line = []
 
-    assert len(transpose) == len(transpose[0]), f"Transpose: {len(transpose)} Internal:{len(transpose[0])}"
+    assert len(transpose) == len(
+        transpose[0]
+    ), f"Transpose: {len(transpose)} Internal:{len(transpose[0])}"
     return transpose
 
 

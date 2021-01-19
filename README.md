@@ -11,6 +11,8 @@ Day 12 Part II Visualization:
 
 ![](images/day_12.gif)
 
+Day 20 Part II Highlight Monsters:
+![](images/aoc_20.png)
 
 # Timings:
 - MacBook Pro (Retina, 13-inch, Early 2015)

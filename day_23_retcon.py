@@ -1,5 +1,3 @@
-
-
 def cups_in_place(rounds, curr, ll):
     max_input = len(ll) - 1
     for _ in range(rounds):
@@ -26,7 +24,7 @@ def cups_in_place(rounds, curr, ll):
 
 def part01(puzzle_input):
 
-    ll = [i for i in range(0, len(puzzle_input)+1)]
+    ll = [i for i in range(0, len(puzzle_input) + 1)]
     pi1 = [int(i) for i in puzzle_input]
     pi2 = pi1[:]
     pi2.append(pi2.pop(0))
