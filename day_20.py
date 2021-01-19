@@ -1,8 +1,7 @@
 import math
 import re
-from collections import defaultdict
-from typing import List
-
+from typing import Dict, List
+import display
 import helpers
 
 
@@ -11,13 +10,11 @@ def rotate(array):
     n_array = array[:]
     array_length = len(array)
     squared = int(math.sqrt(array_length))
-
-    for x in range(squared):
+    assert array_length == len(array[0]), f"Expected same length for rows/cols, but got rows:{array_length} cols:{len(array[0])}"
+    for _ in range(squared):
         r = []
         for i in range(array_length):
-            item = []
-            for j in range(array_length):
-                item.append(n_array[j][i])
+            item = [n_array[j][i] for j in range(array_length)]
             r.append(item)
         r = [list(reversed(line)) for line in r]
 
@@ -30,9 +27,7 @@ def rotate(array):
 def flip(array):
     v = [line for line in reversed(array)]
     h = [list(reversed(line)) for line in array]
-    h1 = [list(reversed(line)) for line in v]
-    v1 = [line for line in reversed(h)]
-    return [v, v1, h, h1]
+    return [v, h]
 
 
 def parse(lines):
@@ -59,11 +54,11 @@ def is_match(arg1: List[List[str]], arg2: List[List[str]], direction=None) -> bo
 
         if direction == "u" and u:
             return True
-        elif direction == "d" and d:
+        if direction == "d" and d:
             return True
-        elif direction == "l" and l:
+        if direction == "l" and l:
             return True
-        elif direction == "r" and r:
+        if direction == "r" and r:
             return True
 
         return False
@@ -79,22 +74,23 @@ def dfs(array, keys):
         for key in keys:
             if k == key:
                 continue
-            neighbours = get_neighbours(array, k)
+            neighbours = get_variations(array, k)
 
             for neighbour in neighbours:
-                # print(key * 50)
                 placement = is_match(array[key], neighbour)
                 if placement:
                     order.append((k, key))
     return order
 
 
-def get_neighbours(array, k: str):
+def get_variations(image_dict, image_key: str):
     seen = set()
-    all_ = [array[k]]
-    seen.add(str(array[k]))
+    all_ = [image_dict[image_key]]
+    seen.add(str(image_dict[image_key]))
+    assert len(image_dict[image_key]) == len(image_dict[image_key][0])
+    assert len(image_dict[image_key]) > 0
 
-    rotates = rotate(array[k])
+    rotates = rotate(image_dict[image_key])
     for a in rotates:
         temp = str(a)
         if temp not in seen:
@@ -134,35 +130,50 @@ def get_image_graph(response):
     return total
 
 
-def part_02(array, corners, total):
-    corner = str(corners[0])
-    stack = get_starting_stack(array, total, corner)
+def part_02(image_dict: Dict[str, List[List[str]]], corners, total):
+    stack = []
+    while len(stack) != 2:
+        stack.clear()
+        corner = corners.pop()
+        stack = get_starting_stack(image_dict, total, corner)
+
     used_keys = [k[0] for k in stack]
+
     # get the header row
-    while len(stack) < math.sqrt(len(array)):
+    while len(stack) < math.sqrt(len(image_dict)):
         key, image = stack[-1]
+        # print(f"Searching for {key} in the neighbours of {total[key]}")
         for ii in total[key]:
             if ii in used_keys:
                 continue
-            for new in get_neighbours(array, ii):
+            for new in get_variations(image_dict, ii):
                 new_result = is_match(image, new, direction="r")
                 if new_result:
                     stack.append((ii, new))
                     used_keys.append(ii)
+    temp_stack = stack[:]
+    temp_used_keys = used_keys[:]
 
-    for s in stack:
-        key, image = s
-        for ii in total[key]:
-            if ii in used_keys:
-                continue
-            for new in get_neighbours(array, ii):
-                new_result = is_match(image, new, direction="d")
-                if new_result:
-                    stack.append((ii, new))
-                    used_keys.append(ii)
+    while len(stack) != len(image_dict):
+        stack = temp_stack[:]
+        used_keys = temp_used_keys[:]
 
-    squared = math.sqrt(len(stack))
-    # print_stack(stack, squared)
+        for s in stack:
+            key, image = s
+            for ii in total[key]:
+
+                if ii in used_keys:
+                    continue
+
+                for new in get_variations(image_dict, ii):
+                    new_result = is_match(image, new, direction="d")
+                    if new_result:
+                        stack.append((ii, new))
+                        used_keys.append(ii)
+                        break
+
+    squared = math.sqrt(len(image_dict))
+
     return get_image_stitched(stack, squared)
 
 
@@ -183,55 +194,59 @@ def print_stack(stack, squared):
         if count % int(squared) == 0:
             print()
         count += 1
-        # print(count)
-    # print("=" * 50)
-    # ffinal = []
-    # final = []
-    #
-    # for index, st in enumerate(stack, 1):
-    #     temp_string = ""
-    #     for i in range(0, len(stack)):
-    #         temp_string += ''.join(st[1][i])
-    #         # print(temp_string)
-    #         # print("  " + temp_string[2:-2] + "  ")
-    #         if len(temp_string) == len(stack[0][1]) * squared:
-    #             final.append(temp_string)
-    #             temp_string = ""
-    #         if len(final) == len(stack[0][1]):
-    #             ffinal.extend(final)
-    #             final.clear()
-    #
-    # for f in ffinal:
-    #     print(f)
 
 
-def get_starting_stack(array: dict, total: dict, corner: str):
-
+def get_starting_stack(image_dict: dict, total: dict, corner: str):
     stack = []
-    for i in total[corner]:
-        image = array[i]
-        for n in get_neighbours(array, corner):
-            result = is_match(n, image, direction="r")
-            if result:
-                stack.append((corner, n))
-                stack.append((i, image))
-                break
+    key1, key2 = total[corner]
 
-    # if len(stack) != 2:
-    #     # print("Stack:", stack)
-    #     raise
+    image1 = image_dict[key1]
+    image2 = image_dict[key2]
+
+    for n in get_variations(image_dict, corner):
+
+        result1 = is_match(n, image1, direction="r")
+        result2 = is_match(n, image2, direction="r")
+
+        if result1:
+            for nn in get_variations(image_dict, key2):
+                result_new = is_match(n, nn, direction="d")
+                if result1 and result_new:
+                    stack.append((corner, n))
+                    stack.append((key1, image1))
+                    break
+
+        if result2:
+            for nnn in get_variations(image_dict, key1):
+                result_new = is_match(n, nnn, direction="d")
+                if result2 and result_new:
+                    stack.append((corner, n))
+                    stack.append((key2, image2))
+                    break
+
     return stack
 
 
+def display_image(image, index):
+    display.generic_out(
+        image, {".": "white", "#": "green", "M": "red"}, "day_20", index
+    )
+
+
 def get_monsters(r):
-    targets = defaultdict(int)
+    display_image(r, -1)
+    targets = dict()
     waters = sum(v.count("#") for v in r)
     s = {"0": r}
-    n = get_neighbours(s, "0")
-    m1 = re.compile(r".{18,}#.")
+    n = get_variations(s, "0")
+
+    m1 = re.compile(r".{18}#.")
     m2 = re.compile(r"#.{4}##.{4}##.{4}###")
-    m3 = re.compile(r"#.{2}#.{2}#.{2}#.{2}#.{2}#")
+    m3 = re.compile(r".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
+
     for index, lines in enumerate(n):
+        lines = list(lines)
+        targets[index] = 0
         while lines:
             try:
                 t1 = lines.pop(0)
@@ -244,12 +259,26 @@ def get_monsters(r):
             r3 = m3.findall("".join(t3))
 
             if r1 and r2 and r3:
+
+                #print(index, len(r1), len(r2), len(r3))
+                assert len(r1) == 1 or len(r2) == 1 or len(r3) == 1, "Could be > 1 of the same monster on three lines."
                 targets[index] += 1
 
+                # s1 = re.sub(m1, "                  M ", ''.join(t1))
+                # s2 = re.sub(m2, "M    MM    MM    MMM", ''.join(t2))
+                # s3 = re.sub(m3, " M  M  M  M  M  M   ", ''.join(t3))
+
+                # print(''.join(t1))
+                # print(s2)
+                # print(s3)
             lines.insert(0, t3)
             lines.insert(0, t2)
 
     monsters = max(v for k, v in targets.items())
+    # for k, v in targets.items():
+    #     if v == monsters:
+    #         for l in n[k]:
+    #             print(l)
     return waters - (monsters * 15)
 
 
@@ -264,7 +293,7 @@ def run():
     # part 02 (requires partial solution from p1)
     r = part_02(array, corners, total)
     p2 = get_monsters(r)
-    assert p2 == 2376
+    assert p2 == 2376, f"Expected 2376, but received {p2}"
 
 
 def get_image_stitched(stack, squared):
@@ -280,14 +309,15 @@ def get_image_stitched(stack, squared):
 
     transpose = []
     while imgs:
-        todo = [imgs.pop(0) for _ in range(int(squared))]
-        # print(todo)
+        img = [imgs.pop(0) for _ in range(int(squared))]
         line = []
 
-        for index in range(1, len(todo[0]) - 1):
-            line += ["".join(t[index][1:-1]) for t in todo]
+        for index in range(1, len(img[0]) - 1):
+            line += ["".join(t[index][1:-1]) for t in img]
             transpose.append("".join(line))
             line = []
+
+    assert len(transpose) == len(transpose[0]), f"Transpose: {len(transpose)} Internal:{len(transpose[0])}"
     return transpose
 
 
